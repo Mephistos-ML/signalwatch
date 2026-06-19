@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from signalwatch.adapters.base import SourceAdapter
+from signalwatch.sources.base import SourceAdapter
 from signalwatch.models import WatchItem
 
 

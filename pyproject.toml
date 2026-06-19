@@ -25,6 +25,9 @@ dev = [
     "ruff>=0.5.0",
 ]
 
+[project.scripts]
+signalwatch = "signalwatch.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
