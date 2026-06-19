@@ -5,8 +5,8 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+from signalwatch.app.run_bot import run_bot
 from signalwatch.logging_config import setup_logging
-from signalwatch.app import run_bot
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -16,9 +16,9 @@ def build_parser() -> argparse.ArgumentParser:
         description="Configurable monitoring and alerting engine for domain-specific signals.",
         epilog=(
             "Examples:\n"
-            "  signalwatch run-bot config.yaml\n"
-            "  signalwatch --verbose run-bot configs/tkmaxx.yaml\n"
-            "  signalwatch --quiet run-bot configs/tkmaxx.yaml"
+            "  signalwatch run-bot examples/example.yml\n"
+            "  signalwatch --verbose run-bot examples/example.yml\n"
+            "  signalwatch --quiet run-bot examples/example.yml"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -47,8 +47,8 @@ def build_parser() -> argparse.ArgumentParser:
         description="Run one monitoring cycle using source, storage, and notification settings from YAML.",
         epilog=(
             "Examples:\n"
-            "  signalwatch run-bot config.yaml\n"
-            "  signalwatch --verbose run-bot configs/tkmaxx.yaml"
+            "  signalwatch run-bot examples/example.yml\n"
+            "  signalwatch --verbose run-bot examples/example.yml"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )

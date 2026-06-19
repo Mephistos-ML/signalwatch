@@ -1,11 +1,14 @@
-"""Application-level monitoring pipeline for SignalWatch."""
+
+
+"""Run-bot application workflow."""
 
 from __future__ import annotations
 
 import logging
 from pathlib import Path
 
-from signalwatch.sources.fake import FakeAdapter
+from signalwatch.app.source_factory import create_source
+from signalwatch.config import load_config
 
 logger = logging.getLogger(__name__)
 
@@ -18,10 +21,11 @@ def run_bot(config_path: Path) -> None:
     """
     logger.info("Using config: %s", config_path)
 
-    # Temporary smoke test. This will later be replaced by config-driven
-    # adapter construction, storage, and notification dispatch.
-    adapter = FakeAdapter()
-    items = adapter.fetch_items()
+    config = load_config(config_path)
+    logger.info("Source type: %s", config.source.type)
+
+    source = create_source(config.source)
+    items = source.fetch_items()
 
     logger.info("Fetched %d item(s)", len(items))
 

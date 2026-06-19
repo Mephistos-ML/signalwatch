@@ -1,15 +1,14 @@
-"""Fake adapter used to test the pipeline without network access."""
+"""Fake source used to test the pipeline without network access."""
 
 from __future__ import annotations
 
 from collections.abc import Sequence
 
-from signalwatch.sources.base import SourceAdapter
 from signalwatch.models import WatchItem
 
 
-class FakeAdapter(SourceAdapter):
-    """Adapter returning static items for local pipeline testing."""
+class FakeSource:
+    """Source returning static items for local pipeline testing."""
 
     def fetch_items(self) -> Sequence[WatchItem]:
         """Return static test items."""
