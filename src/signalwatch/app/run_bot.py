@@ -28,7 +28,3 @@ def run_bot(config_path: Path) -> None:
     items = source.fetch_items()
 
     logger.info("Fetched %d item(s)", len(items))
-
-    for item in items:
-        logger.info("%s | %s | %s", item.source, item.title, item.url)
-        logger.debug("Metadata: %s", item.metadata)
