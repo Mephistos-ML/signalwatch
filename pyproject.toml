@@ -1,0 +1,64 @@
+# Project build, packaging, and tooling configuration.
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "signalwatch"
+dynamic = ["version"]
+description = "Configurable monitoring and alerting engine for domain-specific signals."
+requires-python = ">=3.12"
+dependencies = [
+    "beautifulsoup4>=4.12.0",
+    "playwright>=1.45.0",
+    "pyyaml>=6.0.0",
+    "requests>=2.32.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "build>=1.2.0",
+    "mypy>=1.10.0",
+    "pytest>=8.0.0",
+    "python-semantic-release>=9.0.0",
+    "ruff>=0.5.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+version = {attr = "signalwatch.__version__.__version__"}
+
+[tool.semantic_release]
+version_variables = ["src/signalwatch/__version__.py:__version__"]
+branch = "main"
+commit_parser = "conventional"
+build_command = "python -m build --sdist --wheel ."
+changelog_file = "CHANGELOG.md"
+commit_message = "chore(release): {version}"
+
+[tool.semantic_release.remote]
+type = "github"
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.pytest.ini_options]
+addopts = "-ra -q"
+markers = [
+    "integration: end-to-end example/CLI integration tests (may be slow)",
+    "smoke: fast smoke tests for CLI/entrypoints",
+    "unit: fast unit tests with no subprocess, no network, minimal IO",
+]
+
+log_cli = true
+log_cli_level = "INFO"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
