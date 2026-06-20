@@ -211,3 +211,7 @@ python3 -m compileall src tests
 - Telegram notifications are text-only; product images are parsed but not sent.
 - Watch mode runs as a foreground process, not as an installed service.
 - Notification batching and retry policies are intentionally minimal.
+
+## License
+
+MIT License. See [LICENSE](LICENSE).
