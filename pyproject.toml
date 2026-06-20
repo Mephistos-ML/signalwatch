@@ -8,6 +8,29 @@ build-backend = "setuptools.build_meta"
 name = "signalwatch"
 dynamic = ["version"]
 description = "Configurable monitoring and alerting engine for domain-specific signals."
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Ernest Borysenko" },
+]
+keywords = [
+    "monitoring",
+    "telegram",
+    "scraping",
+    "watcher",
+    "tkmaxx",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet",
+    "Topic :: Utilities",
+]
 requires-python = ">=3.12"
 dependencies = [
     "beautifulsoup4>=4.12.0",
@@ -24,6 +47,14 @@ dev = [
     "python-semantic-release>=9.0.0",
     "ruff>=0.5.0",
 ]
+
+[project.scripts]
+signalwatch = "signalwatch.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Mephistos-ML/signalwatch"
+Repository = "https://github.com/Mephistos-ML/signalwatch"
+Issues = "https://github.com/Mephistos-ML/signalwatch/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

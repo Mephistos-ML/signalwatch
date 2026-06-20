@@ -1,0 +1,19 @@
+source:
+  type: tkmaxx
+  url: "https://www.tkmaxx.com/uk/en/mens-gold-label/c/02090000?sort=published_date+desc"
+
+storage:
+  sqlite_path: "../data/tkmaxx.sqlite3"
+
+notification:
+  type: log
+
+matching:
+  brands:
+    - Balenciaga
+    - Rick Owens
+    - Palm Angels
+
+polling:
+  interval_seconds: 3600
+  jitter_seconds: 600
