@@ -6,6 +6,7 @@ import argparse
 from pathlib import Path
 
 from signalwatch.app.run_bot import run_bot
+from signalwatch.app.watch import watch
 from signalwatch.logging_config import setup_logging
 
 
@@ -16,9 +17,10 @@ def build_parser() -> argparse.ArgumentParser:
         description="Configurable monitoring and alerting engine for domain-specific signals.",
         epilog=(
             "Examples:\n"
-            "  signalwatch run-bot examples/example.yml\n"
-            "  signalwatch --verbose run-bot examples/example.yml\n"
-            "  signalwatch --quiet run-bot examples/example.yml"
+            "  signalwatch check examples/example.yml\n"
+            "  signalwatch watch examples/tkmaxx-telegram.yml\n"
+            "  signalwatch --verbose check examples/example.yml\n"
+            "  signalwatch --quiet check examples/example.yml"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -40,22 +42,38 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="COMMAND",
     )
 
-    run_bot_parser = subparsers.add_parser(
-        "run-bot",
-        aliases=["run_bot"],
+    check_parser = subparsers.add_parser(
+        "check",
         help="Run one monitoring cycle from a YAML config file.",
         description="Run one monitoring cycle using source, storage, and notification settings from YAML.",
         epilog=(
             "Examples:\n"
-            "  signalwatch run-bot examples/example.yml\n"
-            "  signalwatch --verbose run-bot examples/example.yml"
+            "  signalwatch check examples/example.yml\n"
+            "  signalwatch --verbose check examples/example.yml"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    run_bot_parser.add_argument(
+    check_parser.add_argument(
         "config_path",
         type=Path,
         help="Path to the YAML configuration file that defines the monitoring run.",
+    )
+
+    watch_parser = subparsers.add_parser(
+        "watch",
+        help="Run monitoring cycles repeatedly from a YAML config file.",
+        description="Run monitoring cycles repeatedly using polling settings from YAML.",
+        epilog=(
+            "Examples:\n"
+            "  signalwatch watch examples/tkmaxx-telegram.yml\n"
+            "  signalwatch --verbose watch examples/tkmaxx-telegram.yml"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    watch_parser.add_argument(
+        "config_path",
+        type=Path,
+        help="Path to the YAML configuration file that defines the watcher.",
     )
 
     return parser
@@ -68,8 +86,12 @@ def main() -> None:
 
     setup_logging(verbose=args.verbose, quiet=args.quiet)
 
-    if args.command in {"run-bot", "run_bot"}:
+    if args.command == "check":
         run_bot(args.config_path)
+        return
+
+    if args.command == "watch":
+        watch(args.config_path)
         return
 
     parser.error(f"Unsupported command: {args.command}")

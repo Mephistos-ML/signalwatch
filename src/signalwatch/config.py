@@ -41,6 +41,14 @@ class MatchingConfig:
 
 
 @dataclass(frozen=True)
+class PollingConfig:
+    """Polling configuration loaded from YAML."""
+
+    interval_seconds: int = 3600
+    jitter_seconds: int = 600
+
+
+@dataclass(frozen=True)
 class AppConfig:
     """Application configuration loaded from YAML."""
 
@@ -48,6 +56,7 @@ class AppConfig:
     storage: StorageConfig
     notification: NotificationConfig
     matching: MatchingConfig
+    polling: PollingConfig
 
 
 def load_config(path: Path) -> AppConfig:
@@ -119,6 +128,9 @@ def load_config(path: Path) -> AppConfig:
     matching = raw_config.get("matching")
     matching_config = _parse_matching_config(matching)
 
+    polling = raw_config.get("polling")
+    polling_config = _parse_polling_config(polling)
+
     return AppConfig(
         source=SourceConfig(
             type=source_type,
@@ -133,6 +145,7 @@ def load_config(path: Path) -> AppConfig:
             chat_id_env=chat_id_env,
         ),
         matching=matching_config,
+        polling=polling_config,
     )
 
 
@@ -170,6 +183,77 @@ def _parse_matching_config(raw_matching: object) -> MatchingConfig:
         parsed_brands.append(brand)
 
     return MatchingConfig(brands=tuple(parsed_brands))
+
+
+def _parse_polling_config(raw_polling: object) -> PollingConfig:
+    """Parse optional polling config.
+
+    Args:
+        raw_polling: Raw polling config loaded from YAML.
+
+    Returns:
+        Parsed polling config.
+
+    Raises:
+        ValueError: If polling config has an invalid shape.
+    """
+    if raw_polling is None:
+        return PollingConfig()
+
+    if not isinstance(raw_polling, dict):
+        raise ValueError("Config 'polling' must be a mapping if provided.")
+
+    interval_seconds = _parse_positive_int(
+        value=raw_polling.get("interval_seconds", 3600),
+        config_key="polling 'interval_seconds'",
+    )
+    jitter_seconds = _parse_non_negative_int(
+        value=raw_polling.get("jitter_seconds", 600),
+        config_key="polling 'jitter_seconds'",
+    )
+
+    return PollingConfig(
+        interval_seconds=interval_seconds,
+        jitter_seconds=jitter_seconds,
+    )
+
+
+def _parse_positive_int(value: object, config_key: str) -> int:
+    """Parse a positive integer config value.
+
+    Args:
+        value: Raw config value.
+        config_key: Config key used in error messages.
+
+    Returns:
+        Parsed positive integer.
+
+    Raises:
+        ValueError: If the value is not a positive integer.
+    """
+    if not isinstance(value, int) or value <= 0:
+        raise ValueError(f"Config {config_key} must be a positive integer.")
+
+    return value
+
+
+def _parse_non_negative_int(value: object, config_key: str) -> int:
+    """Parse a non-negative integer config value.
+
+    Args:
+        value: Raw config value.
+        config_key: Config key used in error messages.
+
+    Returns:
+        Parsed non-negative integer.
+
+    Raises:
+        ValueError: If the value is not a non-negative integer.
+    """
+    if not isinstance(value, int) or value < 0:
+        raise ValueError(f"Config {config_key} must be a non-negative integer.")
+
+    return value
 
 
 def _resolve_config_path(path: Path, config_path: Path) -> Path:
