@@ -1,0 +1,11 @@
+source:
+  type: tkmaxx
+  url: "https://www.tkmaxx.com/uk/en/mens-gold-label/c/02090000?sort=published_date+desc"
+
+storage:
+  sqlite_path: "../data/tkmaxx.sqlite3"
+
+notification:
+  type: telegram
+  bot_token_env: "SIGNALWATCH_TELEGRAM_BOT_TOKEN"
+  chat_id_env: "SIGNALWATCH_TELEGRAM_CHAT_ID"

@@ -29,6 +29,8 @@ class NotificationConfig:
     """Notification configuration loaded from YAML."""
 
     type: str
+    bot_token_env: str | None = None
+    chat_id_env: str | None = None
 
 
 @dataclass(frozen=True)
@@ -94,6 +96,18 @@ def load_config(path: Path) -> AppConfig:
             "Config notification must define a non-empty 'type' string."
         )
 
+    bot_token_env = notification.get("bot_token_env")
+    if bot_token_env is not None and not isinstance(bot_token_env, str):
+        raise ValueError(
+            "Config notification 'bot_token_env' must be a string if provided."
+        )
+
+    chat_id_env = notification.get("chat_id_env")
+    if chat_id_env is not None and not isinstance(chat_id_env, str):
+        raise ValueError(
+            "Config notification 'chat_id_env' must be a string if provided."
+        )
+
     return AppConfig(
         source=SourceConfig(
             type=source_type,
@@ -102,7 +116,11 @@ def load_config(path: Path) -> AppConfig:
         storage=StorageConfig(
             sqlite_path=_resolve_config_path(path=Path(sqlite_path), config_path=path),
         ),
-        notification=NotificationConfig(type=notification_type),
+        notification=NotificationConfig(
+            type=notification_type,
+            bot_token_env=bot_token_env,
+            chat_id_env=chat_id_env,
+        ),
     )
 
 
