@@ -1,2 +1,8 @@
 source:
   type: fake
+
+storage:
+  sqlite_path: "../data/example.sqlite3"
+
+notification:
+  type: log
