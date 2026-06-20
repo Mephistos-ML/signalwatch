@@ -7,3 +7,9 @@ storage:
 
 notification:
   type: log
+
+matching:
+  brands:
+    - Balenciaga
+    - Rick Owens
+    - Palm Angels

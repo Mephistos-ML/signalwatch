@@ -34,12 +34,20 @@ class NotificationConfig:
 
 
 @dataclass(frozen=True)
+class MatchingConfig:
+    """Item matching configuration loaded from YAML."""
+
+    brands: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
 class AppConfig:
     """Application configuration loaded from YAML."""
 
     source: SourceConfig
     storage: StorageConfig
     notification: NotificationConfig
+    matching: MatchingConfig
 
 
 def load_config(path: Path) -> AppConfig:
@@ -108,6 +116,9 @@ def load_config(path: Path) -> AppConfig:
             "Config notification 'chat_id_env' must be a string if provided."
         )
 
+    matching = raw_config.get("matching")
+    matching_config = _parse_matching_config(matching)
+
     return AppConfig(
         source=SourceConfig(
             type=source_type,
@@ -121,7 +132,44 @@ def load_config(path: Path) -> AppConfig:
             bot_token_env=bot_token_env,
             chat_id_env=chat_id_env,
         ),
+        matching=matching_config,
     )
+
+
+def _parse_matching_config(raw_matching: object) -> MatchingConfig:
+    """Parse optional item matching config.
+
+    Args:
+        raw_matching: Raw matching config loaded from YAML.
+
+    Returns:
+        Parsed matching config.
+
+    Raises:
+        ValueError: If matching config has an invalid shape.
+    """
+    if raw_matching is None:
+        return MatchingConfig()
+
+    if not isinstance(raw_matching, dict):
+        raise ValueError("Config 'matching' must be a mapping if provided.")
+
+    brands = raw_matching.get("brands", [])
+    if brands is None:
+        return MatchingConfig()
+
+    if not isinstance(brands, list):
+        raise ValueError("Config matching 'brands' must be a list if provided.")
+
+    parsed_brands: list[str] = []
+    for brand in brands:
+        if not isinstance(brand, str) or not brand:
+            raise ValueError(
+                "Config matching 'brands' must contain non-empty strings."
+            )
+        parsed_brands.append(brand)
+
+    return MatchingConfig(brands=tuple(parsed_brands))
 
 
 def _resolve_config_path(path: Path, config_path: Path) -> Path:
