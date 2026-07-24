@@ -44,6 +44,18 @@ matching, scheduling, and notifications are kept outside source adapters.
 
 SignalWatch requires Python 3.12 or newer.
 
+Install the package from PyPI:
+
+```bash
+pip install signalwatch
+playwright install webkit
+```
+
+The first command installs the `signalwatch` CLI. The second installs the
+Playwright browser runtime required by the TK Maxx source adapter.
+
+For local development:
+
 ```bash
 python3 -m pip install -e ".[dev]"
 python3 -m playwright install webkit
